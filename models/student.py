@@ -7,8 +7,8 @@ class Student(base):
     id:Mapped[int]=mapped_column(Integer,autoincrement=True,primary_key=True)
     name:Mapped[str]=mapped_column(String(50),nullable=False)
     email:Mapped[str]=mapped_column(String,nullable=False)
-    course_id:Mapped[int]=mapped_column(Integer,ForeignKey("courses.id"))
-    gpa: Mapped[float] = mapped_column(Float)
+    course_id:Mapped[int]=mapped_column(Integer,ForeignKey("courses.id"),nullable=False)
+    gpa: Mapped[float] = mapped_column(Float,nullable=False)
 
     course:Mapped["Course"]=relationship(back_populates="students")
 
