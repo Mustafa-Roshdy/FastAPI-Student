@@ -21,7 +21,7 @@ def create_student(student: StudentCreate,db: Session = Depends(get_db_connectio
 @router.get("/",response_model=list[StudentResponse])
 def get_students(skip: int = 0,limit: int = 100,db: Session = Depends(get_db_connection)):
 
-    return student_crud.get_students(db,skip,limit)
+    return student_crud.get_all_students(db,skip,limit)
 
 # Endpoint for GET Student
 @router.get("/{student_id}",response_model=StudentResponse)
