@@ -12,4 +12,11 @@ class Settings(BaseSettings):
         extra="ignore"  # Prevents errors if extra variables exist in .env
     )
 
+    @property
+    def sync_database_url(self) -> str:
+        """Ensures 'postgres://' is replaced with 'postgresql://' for SQLAlchemy compatibility."""
+        if self.DATABASE_URL.startswith("postgres://"):
+            return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        return self.DATABASE_URL
+
 settings=Settings()
