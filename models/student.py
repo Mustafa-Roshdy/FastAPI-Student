@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from core.database import base
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy import String, Integer
+from sqlalchemy import String
 
 if TYPE_CHECKING:
     from models.enrollment import Enrollment
@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class Student(base):
     __tablename__ = "students"
 
-    national_id: Mapped[int] = mapped_column(
-        Integer,
+    national_id: Mapped[str] = mapped_column(
+        String(14),
         primary_key=True,
         unique=True
     )

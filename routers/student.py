@@ -43,7 +43,7 @@ def get_students(
     response_model=StudentResponse
 )
 def search_by_national_id(
-    national_id: int,
+    national_id: str,
     db: Session = Depends(get_db_connection)
 ):
     student = student_crud.search_student_by_national_id(
@@ -89,7 +89,7 @@ def search_by_email(
     response_model=StudentResponse
 )
 def get_student(
-    national_id: int,
+    national_id: str,
     db: Session = Depends(get_db_connection)
 ):
     student = student_crud.get_student(
@@ -111,7 +111,7 @@ def get_student(
     response_model=StudentResponse
 )
 def update_student(
-    national_id: int,
+    national_id: str,
     student: StudentCreate,
     db: Session = Depends(get_db_connection)
 ):
@@ -132,7 +132,7 @@ def update_student(
 # Endpoint for DELETE Student
 @router.delete("/{national_id}")
 def delete_student(
-    national_id: int,
+    national_id: str,
     db: Session = Depends(get_db_connection)
 ):
     student = student_crud.delete_student(

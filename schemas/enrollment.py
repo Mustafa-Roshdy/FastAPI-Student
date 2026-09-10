@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 class EnrollmentCreate(BaseModel):
-    student_id: int
+    student_id: str
     course_id: int
     grade: float = Field(ge=0, le=100)
     enrollment_date: date
@@ -17,7 +17,7 @@ class EnrollmentUpdate(BaseModel):
 
 class EnrollmentResponse(BaseModel):
     id: int
-    student_id: int
+    student_id: str
     course_id: int
     grade: float
     enrollment_date: date

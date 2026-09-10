@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-
+from datetime import date
 
 class CourseBase(BaseModel):
     name: str
@@ -14,7 +14,7 @@ class CourseStudentResponse(BaseModel):
     name: str
     email: str
     grade: float
-    enrollment_date: str
+    enrollment_date: date
 
     model_config = ConfigDict(from_attributes=True)
 

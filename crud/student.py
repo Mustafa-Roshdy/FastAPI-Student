@@ -23,7 +23,7 @@ def create_student(
 # get specific student by national ID
 def get_student(
     db: Session,
-    national_id: int
+    national_id: str
 ):
     return (
         db.query(Student)
@@ -54,7 +54,7 @@ def get_all_students(
 # search specific student by national ID
 def search_student_by_national_id(
     db: Session,
-    national_id: int
+    national_id: str
 ):
     return get_student(db, national_id)
 
@@ -76,7 +76,7 @@ def search_student_by_email(
 # update student
 def update_student(
     db: Session,
-    national_id: int,
+    national_id: str,
     data: StudentCreate
 ):
     student = get_student(db, national_id)
@@ -96,7 +96,7 @@ def update_student(
 # delete student
 def delete_student(
     db: Session,
-    national_id: int
+    national_id: str
 ):
     student = get_student(db, national_id)
 

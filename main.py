@@ -1,11 +1,18 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI,Request
-from routers.student import router as student_router
-from routers.course import router as course_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from core.database import engine, base
+
+from routers import (
+    student,
+    course,
+    enrollment,
+    phone
+)
+
+
 # IMPORTANT: Import models so SQLAlchemy registers them before creation
 import models 
 
@@ -40,8 +47,11 @@ async def global_exception_handler(request: Request, exc: Exception):
         headers={"Access-Control-Allow-Origin": request.headers.get("origin", "*")},
     )
 
-app.include_router(student_router)
-app.include_router(course_router)
+
+app.include_router(student.router)
+app.include_router(course.router)
+app.include_router(enrollment.router)
+app.include_router(phone.router)
 
 @app.get("/")
 def root():

@@ -19,7 +19,7 @@ class Enrollment(base):
         autoincrement=True
     )
 
-    student_id: Mapped[int] = mapped_column(
+    student_id: Mapped[str] = mapped_column(
         Integer,
         ForeignKey(
             "students.national_id",
