@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from core.database import base
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy import Integer, Float, ForeignKey, Date, UniqueConstraint
+from sqlalchemy import Integer, Float, ForeignKey, Date, UniqueConstraint,String
 
 if TYPE_CHECKING:
     from models.student import Student
@@ -20,11 +20,11 @@ class Enrollment(base):
     )
 
     student_id: Mapped[str] = mapped_column(
-        Integer,
+        String(14),
         ForeignKey(
             "students.national_id",
-            onupdate="CASCADE",
-            ondelete="RESTRICT"
+            ondelete="RESTRICT",
+            onupdate="CASCADE"
         ),
         nullable=False
     )

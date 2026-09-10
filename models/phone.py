@@ -18,14 +18,14 @@ class Phone(base):
     )
 
     student_id: Mapped[str] = mapped_column(
-        Integer,
+        String(14),
         ForeignKey(
             "students.national_id",
-            onupdate="CASCADE",
-            ondelete="RESTRICT"
+            ondelete="RESTRICT",
+            onupdate="CASCADE"
         ),
         nullable=False
-    )
+        )
 
     phone_number: Mapped[str] = mapped_column(
         String(20),
