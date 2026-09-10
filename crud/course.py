@@ -4,7 +4,10 @@ from models.course import Course
 from schemas.course import CourseCreate
 
 # create course
-def create_course(db: Session, course: CourseCreate):
+def create_course(
+    db: Session,
+    course: CourseCreate
+):
     db_course = Course(
         name=course.name
     )
@@ -16,11 +19,25 @@ def create_course(db: Session, course: CourseCreate):
     return db_course
 
 # get specific course
-def get_course(db: Session, course_id: int):
+def get_course(
+    db: Session,
+    course_id: int
+):
     return (
         db.query(Course)
         .filter(Course.id == course_id)
         .first()
+    )
+
+# get all courses by name
+def search_course_by_name(
+    db: Session,
+    name: str
+):
+    return (
+        db.query(Course)
+        .filter(Course.name.ilike(f"%{name}%"))
+        .all()
     )
 
 # get all courses
@@ -35,7 +52,6 @@ def get_courses(
         .limit(limit)
         .all()
     )
-
 
 # update course
 def update_course(
@@ -56,7 +72,10 @@ def update_course(
     return db_course
 
 # delete course
-def delete_course(db: Session, course_id: int):
+def delete_course(
+    db: Session,
+    course_id: int
+):
     db_course = get_course(db, course_id)
 
     if not db_course:

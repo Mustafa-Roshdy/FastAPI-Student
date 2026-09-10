@@ -12,21 +12,60 @@ router = APIRouter(
 )
 
 # Endpoint for CREATE Course
-@router.post("/",response_model=CourseResponse)
-def create_course(course: CourseCreate,db: Session = Depends(get_db_connection)):
+@router.post("/", response_model=CourseResponse)
+def create_course(
+    course: CourseCreate,
+    db: Session = Depends(get_db_connection)
+):
+    try:
+        return course_crud.create_course(db, course)
 
-    return course_crud.create_course(db, course)
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Course name already exists"
+        )
 
 # Endpoint for GET_ALL Courses
-@router.get("/",response_model=list[CourseResponse])
-def get_courses(skip: int = 0,limit: int = 100,db: Session = Depends(get_db_connection)):
+@router.get("/", response_model=list[CourseResponse])
+def get_courses(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db_connection)
+):
+    return course_crud.get_courses(db, skip, limit)
 
-    return course_crud.get_courses(db,skip,limit)
+
+# Endpoint for GET/Search Course by name
+@router.get("/search", response_model=list[CourseResponse])
+def search_course(
+    name: str,
+    db: Session = Depends(get_db_connection)
+):
+    courses = course_crud.search_course_by_name(
+        db,
+        name
+    )
+
+    if not courses:
+        raise HTTPException(
+            status_code=404,
+            detail="Course not found"
+        )
+
+    return courses
 
 # Endpoint for GET Course
-@router.get("/{course_id}",response_model=CourseResponse)
-def get_course(course_id: int,db: Session = Depends(get_db_connection)):
-    course = course_crud.get_course(db,course_id)
+@router.get("/{course_id}", response_model=CourseResponse)
+def get_course(
+    course_id: int,
+    db: Session = Depends(get_db_connection)
+):
+    course = course_crud.get_course(
+        db,
+        course_id
+    )
 
     if not course:
         raise HTTPException(
@@ -37,24 +76,47 @@ def get_course(course_id: int,db: Session = Depends(get_db_connection)):
     return course
 
 # Endpoint for UPDATE Course
-@router.put("/{course_id}",response_model=CourseResponse)
-def update_course(course_id: int,course: CourseCreate,db: Session = Depends(get_db_connection)):
-
-    updated_course = course_crud.update_course(db,course_id,course)
-
-    if not updated_course:
-        raise HTTPException(
-            status_code=404,
-            detail="Course not found"
+@router.put("/{course_id}", response_model=CourseResponse)
+def update_course(
+    course_id: int,
+    course: CourseCreate,
+    db: Session = Depends(get_db_connection)
+):
+    try:
+        updated_course = course_crud.update_course(
+            db,
+            course_id,
+            course
         )
 
-    return updated_course
+        if not updated_course:
+            raise HTTPException(
+                status_code=404,
+                detail="Course not found"
+            )
+
+        return updated_course
+
+    except HTTPException:
+        raise
+
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Course name already exists"
+        )
 
 # Endpoint for DELETE Course
 @router.delete("/{course_id}")
-def delete_course(course_id: int,db: Session = Depends(get_db_connection)):
-
-    course = course_crud.delete_course(db,course_id)
+def delete_course(
+    course_id: int,
+    db: Session = Depends(get_db_connection)
+):
+    course = course_crud.delete_course(
+        db,
+        course_id
+    )
 
     if not course:
         raise HTTPException(

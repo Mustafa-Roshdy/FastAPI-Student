@@ -1,8 +1,8 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict
 
 
 class CourseBase(BaseModel):
-    name:str
+    name: str
 
 
 class CourseCreate(CourseBase):
@@ -10,14 +10,17 @@ class CourseCreate(CourseBase):
 
 
 class CourseStudentResponse(BaseModel):
-    id:int
-    name:str
-    email:EmailStr
-    gpa:float
+    national_id: int
+    name: str
+    email: str
+    grade: float
+    enrollment_date: str
 
-    model_config=ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
+
 
 class CourseResponse(CourseBase):
-    id:int
-    students: list[CourseStudentResponse]=[]
-    model_config=ConfigDict(from_attributes=True)
+    id: int
+    students: list[CourseStudentResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
