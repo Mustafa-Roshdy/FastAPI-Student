@@ -2,24 +2,33 @@ from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class StudentBase(BaseModel):
-    name:str
-    email:EmailStr
-    gpa:float
+    name: str
+    email: EmailStr
 
 
 class StudentCreate(StudentBase):
-    course_id:int
+    national_id: int
 
 
 class StudentCourseResponse(BaseModel):
-    id:int
-    name:str
+    id: int
+    name: str
+    grade: float
+    enrollment_date: str
 
-    model_config=ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StudentPhoneResponse(BaseModel):
+    id: int
+    phone_number: str
+
+    model_config = ConfigDict(from_attributes=True)
+
 
 class StudentResponse(StudentBase):
-    id:int
-    course_id:int
-    course:StudentCourseResponse
+    national_id: int
+    phones: list[StudentPhoneResponse] = []
+    courses: list[StudentCourseResponse] = []
 
-    model_config=ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)

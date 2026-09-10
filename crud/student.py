@@ -1,11 +1,18 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+
 from models.student import Student
 from schemas.student import StudentCreate
 
 # Create student
-def create_student(db:Session,data:StudentCreate):
-
-    db_student=Student(name=data.name,email=data.email,gpa=data.gpa,course_id=data.course_id)
+def create_student(
+    db: Session,
+    data: StudentCreate
+):
+    db_student = Student(
+        national_id=data.national_id,
+        name=data.name,
+        email=data.email
+    )
 
     db.add(db_student)
     db.commit()
@@ -13,48 +20,91 @@ def create_student(db:Session,data:StudentCreate):
 
     return db_student
 
-# get specific student
-def get_student(db:Session,id:int):
-
-    return (db.query(Student).filter(Student.id==id).first())
+# get specific student by national ID
+def get_student(
+    db: Session,
+    national_id: int
+):
+    return (
+        db.query(Student)
+        .options(
+            joinedload(Student.phones),
+            joinedload(Student.enrollments)
+        )
+        .filter(Student.national_id == national_id)
+        .first()
+    )
 
 # get all students
-def get_all_students(db:Session,skip:int=0,limit:int=100):
+def get_all_students(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100
+):
+    return (
+        db.query(Student)
+        .options(
+            joinedload(Student.phones),
+            joinedload(Student.enrollments)
+        )
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+# search specific student by national ID
+def search_student_by_national_id(
+    db: Session,
+    national_id: int
+):
+    return get_student(db, national_id)
 
-    return (db.query(Student).offset(skip).limit(limit).all())
+# search specific student by Email
+def search_student_by_email(
+    db: Session,
+    email: str
+):
+    return (
+        db.query(Student)
+        .options(
+            joinedload(Student.phones),
+            joinedload(Student.enrollments)
+        )
+        .filter(Student.email == email)
+        .first()
+    )
 
 # update student
-def update_student(db:Session,student_id:int,data:StudentCreate):
+def update_student(
+    db: Session,
+    national_id: int,
+    data: StudentCreate
+):
+    student = get_student(db, national_id)
 
-    getStudent=get_student(db,student_id)
-
-    if not getStudent:
+    if not student:
         return None
 
-    
-    db_student=Student(name=data.name,email=data.email,gpa=data.gpa,course_id=data.course_id)
-
-    getStudent.name=data.name
-    getStudent.email=data.email
-    getStudent.gpa=data.gpa
-    getStudent.course_id=data.course_id
+    student.name = data.name
+    student.email = data.email
 
     db.commit()
-    db.refresh(getStudent)
+    db.refresh(student)
 
-    return getStudent
+    return student
 
 
 # delete student
-def delete_student(db:Session,student_id:int):
+def delete_student(
+    db: Session,
+    national_id: int
+):
+    student = get_student(db, national_id)
 
-    getStudent=get_student(db,student_id)
+    if not student:
+        return None
 
-    if not getStudent:
-            return None
-
-    db.delete(getStudent)
+    db.delete(student)
     db.commit()
 
-    return getStudent
+    return student
 
